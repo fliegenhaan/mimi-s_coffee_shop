@@ -6,10 +6,10 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-// AI endpoints: 10 requests per minute
+// AI endpoints: 5 requests per minute (based on free tier)
 export const aiRateLimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(10, "1 m"),
+  limiter: Ratelimit.slidingWindow(5, "1 m"),
   prefix:  "mimis:ai",
 });
 

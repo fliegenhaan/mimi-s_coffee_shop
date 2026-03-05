@@ -69,18 +69,11 @@ export default function CampaignsPage() {
   const handleGenerate = async () => {
     setGenerating(true);
     try {
-      const newCampaign = await api.generateCampaign(period);
-
-      // Add new campaigns to the list
-      if (Array.isArray(newCampaign)) {
-        setCampaigns(newCampaign);
-      } else {
-        setCampaigns([newCampaign]);
-      }
+      const newCampaigns = await api.generateCampaign(period);
+      setCampaigns(newCampaigns);
 
       toast.success("Campaign generated successfully!");
 
-      // Refresh campaigns
       await fetchData();
     } catch (error) {
       console.error("Failed to generate campaign:", error);
@@ -103,7 +96,6 @@ export default function CampaignsPage() {
   return (
     <AppLayout title="Campaigns">
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Controls */}
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex gap-1.5">
             {periodOptions.map((p) => (
@@ -130,7 +122,6 @@ export default function CampaignsPage() {
           </Button>
         </div>
 
-        {/* Campaign Cards */}
         <div className="space-y-4">
           {campaigns.length === 0 ? (
             <Card className="shadow-card">
@@ -146,8 +137,7 @@ export default function CampaignsPage() {
             ))
           )}
         </div>
-
-        {/* History */}
+        
         {historyCampaigns.length > 0 && (
           <Collapsible open={historyOpen} onOpenChange={setHistoryOpen}>
             <CollapsibleTrigger asChild>

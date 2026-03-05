@@ -57,7 +57,7 @@ export function AIChatWidget() {
     } catch (error) {
       console.error("Chat error:", error);
       toast.error("Failed to get response");
-
+ 
       setMessages((prev) => [
         ...prev,
         {
@@ -136,7 +136,7 @@ export function AIChatWidget() {
           <p className="text-[10px] text-muted-foreground text-center px-4 py-1">
             AI responses are based on your CRM data
           </p>
-          
+
           <div className="p-3 border-t border-border flex gap-2 bg-card">
             <Input
               value={input}

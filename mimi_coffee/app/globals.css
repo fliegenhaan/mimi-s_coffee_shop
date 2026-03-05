@@ -1,26 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:wght@600;700&display=swap');
+
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --font-sans: "DM Sans", var(--font-geist-sans), sans-serif;
+  --font-display: "Playfair Display", serif;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --radius: 0.625rem;
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: #724c31;
+  --color-primary-foreground: #f9f7f5;
+
+  --color-secondary: #f1edea;
+  --color-secondary-foreground: #372c25;
+
+  --color-accent: #ebe0d6;
+  --color-accent-foreground: #423024;
+
+  --color-background: #f9f7f5;
+  --color-foreground: #251e18;
+
+  --color-card: #ffffff;
+  --color-card-foreground: #251e18;
+
+  --color-popover: #ffffff;
+  --color-popover-foreground: #251e18;
+
+  --color-muted: #f2f0ed;
+  --color-muted-foreground: #87786e;
+
+  --color-destructive: #d43535;
+  --color-destructive-foreground: #ffffff;
+
+  --color-border: #e7e3df;
+  --color-input: #e7e3df;
+  --color-ring: #724c31;
+
+  --color-sidebar-background: #f1edea;
+  --color-sidebar-foreground: #372c25;
+  --color-sidebar-primary: #ebe0d6;
+  --color-sidebar-primary-foreground: #423024;
+  --color-sidebar-accent: #ebe0d6;
+  --color-sidebar-accent-foreground: #423024;
+  --color-sidebar-border: #e7e3df;
+  --color-sidebar-ring: #724c31;
+
+  --color-coffee: #724c31;
+  --color-coffee-light: #ebe0d6;
+  --color-coffee-warm: #f9f7f5;
+  --color-caramel: #724c31;
+  --color-cream: #f1edea;
+
+  --shadow-soft: 0 1px 2px rgba(37, 30, 24, 0.04), 0 4px 12px rgba(37, 30, 24, 0.05);
+  --shadow-card: 0 1px 3px rgba(37, 30, 24, 0.05), 0 8px 18px rgba(37, 30, 24, 0.06);
+  --shadow-elevated: 0 10px 30px rgba(37, 30, 24, 0.12);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}
+
+.font-display {
+  font-family: var(--font-display);
 }

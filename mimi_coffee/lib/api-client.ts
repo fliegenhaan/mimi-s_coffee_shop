@@ -112,7 +112,7 @@ export const api = {
     fetchAPI<LatestCampaignsResponse>("/api/campaigns/latest"),
 
   generateCampaign: (period: GeneratedFromPeriod) =>
-    fetchAPI<Campaign>("/api/campaigns", {
+    fetchAPI<Campaign[]>("/api/campaigns", {
       method: "POST",
       body: JSON.stringify({ period }),
     }),

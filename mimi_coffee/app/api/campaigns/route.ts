@@ -1,8 +1,8 @@
-import { supabaseAdmin } from "@/lib/db/supabase";
-import { requireAuth } from "@/lib/auth/require-auth";
-import { apiResponse, apiError, checkRateLimit } from "@/lib/api-helpers";
-import { generateCampaignSchema } from "@/lib/validations";
-import { generatePromoCampaign } from "@/lib/ai/prompts";
+import { supabaseAdmin } from "../../../lib/db/supabase";
+import { requireAuth } from "../../../lib/auth/require-auth";
+import { apiResponse, apiError, checkRateLimit } from "../../../lib/api-helpers";
+import { generateCampaignSchema } from "../../../lib/validations";
+import { generatePromoCampaign } from "../../../lib/ai/prompts";
 import type { GenerateCampaignBody } from "@/types";
 import { ZodError } from "zod";
 

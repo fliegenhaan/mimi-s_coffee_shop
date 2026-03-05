@@ -54,6 +54,18 @@ function rankSummary(items: RankedCount[]): string {
   return items.map((i) => `${i.name} (${i.count})`).join(", ");
 }
 
+function sampleCustomers(customers: GenerateCampaignInput["customers"], limit = 5): string {
+  return customers
+    .slice(0, limit)
+    .map(
+      (c) =>
+        `${c.name} -> favorite: ${c.favouriteProduct} -> interests: ${
+          c.interests.length ? c.interests.join(", ") : "none"
+        }`
+    )
+    .join("\n");
+}
+
 function safeString(value: unknown): string {
   if (typeof value !== "string") return "";
   return value.trim();
@@ -160,12 +172,16 @@ export async function generatePromoCampaign(input: GenerateCampaignInput): Promi
 Generate practical, data-driven campaign ideas from CRM trends.
 Return valid JSON only with no markdown, no prose, and no code fences.`;
 
-  const userPrompt = `Generate 2 to 3 campaign ideas for this week using the CRM summary below.
+  const customerSamples = sampleCustomers(customers);
+
+  const userPrompt = `Generate 2 to 3 campaign ideas for this week using the CRM analytics summary below.
 
 Data period: ${periodText}
 Total customers analyzed: ${customers.length}
 Top interests with counts: ${rankSummary(topInterests)}
 Top products with counts: ${rankSummary(topProducts)}
+Sample customer insights:
+${customerSamples || "No sample customers available"}
 
 Rules:
 - Output 2 or 3 campaigns.
@@ -193,16 +209,57 @@ Return JSON in this exact shape:
 }`;
 
   try {
-    const { text } = await generateText({
+    const { text: generatedText } = await generateText({
       model: google("gemini-2.5-flash"),
       system: systemPrompt,
       prompt: userPrompt,
-      temperature: 0.55,
+      temperature: 0.7,
     });
 
-    const jsonText = extractJsonText(text);
+    const reviewPrompt = `
+You are reviewing marketing campaign ideas generated for a coffee shop.
+
+Improve the campaigns if needed so they are:
+- persuasive
+- realistic for a coffee shop
+- clearly based on the CRM trends
+- concise and friendly
+
+Do NOT change the JSON structure.
+
+Return the improved JSON only.
+
+Campaign JSON:
+${generatedText}
+`;
+
+    let finalText = generatedText;
+    try {
+      const { text: improvedText } = await generateText({
+        model: google("gemini-2.5-flash"),
+        prompt: reviewPrompt,
+        temperature: 0.3,
+      });
+      finalText = improvedText;
+    } catch (reviewError) {
+      console.warn("AI review failed, using original generation:", reviewError);
+    }
+
+    const jsonText = extractJsonText(finalText);
     const parsed = JSON.parse(jsonText) as { campaigns?: unknown[] };
     const campaigns = (parsed.campaigns || []).map(safeCampaign).filter(Boolean) as CampaignData[];
+
+    if (campaigns.length < 2 && finalText !== generatedText) {
+      const fallbackJsonText = extractJsonText(generatedText);
+      const fallbackParsed = JSON.parse(fallbackJsonText) as { campaigns?: unknown[] };
+      const fallbackCampaigns = (fallbackParsed.campaigns || [])
+        .map(safeCampaign)
+        .filter(Boolean) as CampaignData[];
+
+      if (fallbackCampaigns.length >= 2) {
+        return fallbackCampaigns.slice(0, 3);
+      }
+    }
 
     if (campaigns.length < 2) {
       throw new Error("AI response does not contain at least 2 valid campaigns");
@@ -255,7 +312,7 @@ ${contextSummary}`;
         role: m.role,
         content: m.content,
       })),
-      temperature: 0.45,
+      temperature: 0.65,
     });
 
     return text.trim();
